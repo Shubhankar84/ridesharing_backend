@@ -1,0 +1,13 @@
+Name:
+emailid
+password
+mobile no:
+
+add your car:
+car no
+liscence no
+
+verify yourself:
+aadhar no
+
+
