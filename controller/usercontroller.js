@@ -23,11 +23,13 @@ exports.login = async(req, res, next) => {
         const user = await UserService.checkUser(email);
 
         if(!user){
+            console.log("not a user")
             return res.status(401).send({status:false, error:"Username and password does not match"});
         }
         
         const isMatch = await user.comparePassword(password);
         if(isMatch==false){
+            console.log("user name and password dosent match")
             return res.status(401).send({status:false, error:"Username and password does not match"});
         }
 

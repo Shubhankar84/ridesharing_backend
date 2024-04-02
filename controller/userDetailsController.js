@@ -37,6 +37,21 @@ exports.updateCarDetails = async (req, res, next) => {
     }
 }
 
+exports.getCarDetails = async (req, res, next) => {
+    try{
+        
+        const getUserDetails = await userDetailsModel.findOne({ userId: req?.body?.userId }).lean();
+        console.log("Get User Details", getUserDetails);
+        // Current car details
+        const { carDetails } = getUserDetails;
+        console.log(carDetails);
+        res.json({status:true, success:"Cars available", data: carDetails});
+
+    }catch(error){
+        console.log(error);
+    }
+}
+
 exports.checkPersonalDetails = async(req, res, next) => {
     try{
         const getUser = await userDetailsModel.findOne({ userId: req?.body?.userId }).lean();

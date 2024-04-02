@@ -1,4 +1,6 @@
 const app = require('./app');
+const dotenv = require("dotenv");
+dotenv.config({ path: "./.env" });
 const connection = require('./configuration/db')
 const userModel = require('./model/user_Model')
 const todoModel = require('./model/to_do_model')
