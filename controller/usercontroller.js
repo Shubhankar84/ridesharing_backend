@@ -6,6 +6,8 @@ exports.register = async(req, res, next) => {
         const successRes = await UserService.registerUser(email, password);
         
         res.json({status:true, success:"User Registered successfully"});
+        cosole.log(`User registered in with ${email} `)
+
     } catch (error) {
         if(error.code === 11000){
             res.status(400).json({status:false, error: "User is registered already"});
@@ -38,6 +40,7 @@ exports.login = async(req, res, next) => {
         const token = await UserService.generateToken(tokenData, "34567", "1h");
 
         res.status(200).json({status:true, token:token})
+        cosole.log(`User logged in with ${email} `)
 
 
     } catch (error) {
