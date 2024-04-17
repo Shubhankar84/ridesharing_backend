@@ -70,6 +70,157 @@ exports.getpublishedrides = async (req, res, next) => {
     }
 }
 
+// exports.getpublishedrides = async (req, res, next) => {
+//     try {
+//         const { userId } = req.body;
+
+//         // Find rides where userId matches
+//         let publishedRides = await RideModel.find({ userId: userId });
+
+//         // If no rides are found, return empty array
+//         if (!publishedRides || publishedRides.length === 0) {
+//             return res.status(404).json({ message: "No published rides found" });
+//         }
+
+//         // Extract userIds from publishedRides
+//         const userIds = publishedRides.map(ride => ride.userId);
+
+//         // Use aggregation to efficiently fetch userDetails for the filtered rides
+//         publishedRides = await RideModel.aggregate([
+//             {
+//                 $match: { userId: { $in: userIds } } // Match the userIds
+//             },
+//             {
+//                 $lookup: {
+//                     from: UserDetails.collection.name, // userDetails collection name
+//                     localField: 'userId', // Field from RideModel
+//                     foreignField: 'userId', // Field from UserDetails model (should be email)
+//                     as: 'userDetails' // Alias for the joined userDetails data
+//                 }
+//             },
+//             {
+//                 $addFields: {
+//                     requestedBooking: {
+//                         $map: {
+//                             input: "$requestedBooking",
+//                             as: "booking",
+//                             in: {
+//                                 $mergeObjects: [
+//                                     "$$booking",
+//                                     {
+//                                         userDetails: {
+//                                             $arrayElemAt: [
+//                                                 {
+//                                                     $filter: {
+//                                                         input: "$userDetails",
+//                                                         as: "user",
+//                                                         cond: { $eq: ["$$user.userId", "$$booking.userId"] }
+//                                                     }
+//                                                 },
+//                                                 0
+//                                             ]
+//                                         }
+//                                     }
+//                                 ]
+//                             }
+//                         }
+//                     }
+//                 }
+//             },
+//             {
+//                 $addFields: {
+//                     "requestedBooking.userDetails": {
+//                         $map: {
+//                             input: "$requestedBooking",
+//                             as: "booking",
+//                             in: {
+//                                 $arrayElemAt: [
+//                                     {
+//                                         $filter: {
+//                                             input: "$userDetails",
+//                                             as: "user",
+//                                             cond: { $eq: ["$$user.userId", "$$booking.userId"] }
+//                                         }
+//                                     },
+//                                     0
+//                                 ]
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//         ]);
+
+//         // Now, publishedRides contains the fetched records from RideModel with populated userDetails for the filtered rides
+//         console.log(publishedRides);
+
+//         // Send the found rides with user details
+//         res.json({ status: true, publishedRides });
+
+//     } catch (error) {
+//         // Handle error
+//         console.error(error);
+//         res.status(500).json({ message: "Internal server error" });
+//     }
+// }
+
+// exports.getpublishedrides = async (req, res, next) => {
+//     try {
+//         const { userId } = req.body;
+
+//         // Find rides where userId matches
+//         let publishedRides = await RideModel.find({ userId: userId });
+
+//         // Get details for each ride
+//         for (const rideDetails of publishedRides) {
+//             // Get all requested user details for each ride
+//             const bookings = rideDetails.requestedBooking;
+
+//             // for (let i = 0; i < bookings.length; i++) {
+//             //     // const booking = bookings[i];
+//             //     console.log(bookings[i]);
+//             //     const userData = await UserDetails.findOne({ userId: bookings[i].userId });
+//             //     bookings[i] = {
+//             //         // data: bookings[i],
+//             //         ...userData.personalInformation
+//             //     }
+                
+//             //     console.log(bookings[i]);
+//             // }
+//             const updatedBookings = []
+//             for (let booking of bookings) {
+//                 // console.log(userData);
+//                 const userData = await UserDetails.findOne({ userId: booking.userId });
+//                 // booking.userId = userData.personalInformation
+//                 // booking.userId = { ...userData.personalInformation };
+//                 booking.firstName = userData?.personalInformation?.firstName
+//                 console.log(booking);
+//                 console.log('------------OLD---------------');
+//                 const newData = {
+//                     ...booking._doc,
+//                     ...userData?.personalInformation
+//                 }
+//                 updatedBookings.push(newData)
+//                 booking = newData
+//                 console.log(booking);
+//                 console.log('---------------------------');
+//                 console.log(newData);
+//             }
+//             rideDetails.requestedBooking = updatedBookings
+//             console.log(rideDetails);
+//         }
+
+//         res.json({ status: true, publishedRides });
+//     } catch (error) {
+//         // Handle error
+//         console.error(error);
+//         res.status(500).json({ message: "Internal server error" });
+//     }
+// }
+
+
+
+
 
 exports.getbookedrides = async (req, res, next) => {
     try {
