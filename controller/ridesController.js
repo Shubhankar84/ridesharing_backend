@@ -288,19 +288,21 @@ exports.confirmride = async (req, res, next) => {
             return res.status(404).json({ message: "Requested booking not found" });
         }
 
-        // Check if bookedSeats is less than or equal to seats
-        if (ride.bookedSeats + requestedBooking.reqseats > ride.seats) {
-            return res.status(400).json({ message: "Booking is full" });
-        }
-
         // Update the status of the requested booking to "Approved"
         if (status == 0) {
             requestedBooking.status = "Declined";
             // Save the updated ride
             await ride.save();
-            return res.json({ status: true, message: "Booking Declined" });
+            return res.status(201).json({ status: true, message: "Booking Declined" });
 
         }
+
+        // Check if bookedSeats is less than or equal to seats
+        if (ride.bookedSeats + requestedBooking.reqseats > ride.seats) {
+            return res.status(400).json({ message: "Booking is full" });
+        }
+
+        
 
         requestedBooking.status = "Approved";
 

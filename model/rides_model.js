@@ -1,6 +1,8 @@
 const db = require('../configuration/db');
 const mongoose = require('mongoose');
 const userModel = require('../model/user_Model');
+const moment = require('moment-timezone');
+
 
 const { Schema } = mongoose;
 
@@ -71,7 +73,7 @@ const ridesSchema = new Schema({
             reqseats: { type: Number },
             date: {
                 type: Date,
-                default: Date.now()  
+                default: () => moment().tz('Asia/Kolkata').toDate()  
 
             } 
 

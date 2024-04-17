@@ -52,17 +52,31 @@ exports.getCarDetails = async (req, res, next) => {
     }
 }
 
-exports.checkPersonalDetails = async(req, res, next) => {
-    try{
+exports.checkPersonalDetails = async (req, res, next) => {
+    try {
         const getUser = await userDetailsModel.findOne({ userId: req?.body?.userId }).lean();
-        if(getUser != null){
-            res.json({ status: true, success: "User Details Present"});
+        if (getUser != null) {
+            res.json({ status: true, success: "User Details Present", userDetails: getUser });
+        } else {
+            res.json({ status: false, success: "User Details Not Present" });
         }
-        else{
-            res.json({ status: false, success: "User Details Not Present"});
-        }
+    } catch (error) {
+        console.log(error);
+    }
+}
 
-    }catch (error) {
+
+exports.getUserDetails = async(req, res, next) => {
+    try{
+        
+        const getUserDetails = await userDetailsModel.findOne({ userId: req?.body?.userId }).lean();
+        console.log("Get User Details", getUserDetails);
+        // Current car details
+        // const { carDetails } = getUserDetails;
+        // console.log(getUserDetails);
+        res.json({status:true, success:"UserDetails available", data: getUserDetails});
+
+    }catch(error){
         console.log(error);
     }
 }
