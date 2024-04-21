@@ -21,5 +21,7 @@ router.post('/getbookedrides', RideController.getbookedrides)
 // to see user the rides that are published by him
 router.post('/getpublishedrides', RideController.getpublishedrides)
 
+router.post('/verify', RideController.verify)
+
 
 module.exports = router;

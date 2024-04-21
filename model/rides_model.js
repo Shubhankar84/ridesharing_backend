@@ -75,7 +75,9 @@ const ridesSchema = new Schema({
                 type: Date,
                 default: () => moment().tz('Asia/Kolkata').toDate()  
 
-            } 
+            },
+            otp: {type: Number},
+            verified:{type: Boolean}
 
         }
     ],

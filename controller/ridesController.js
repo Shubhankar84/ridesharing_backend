@@ -265,8 +265,41 @@ exports.getbookedrides = async (req, res, next) => {
     }
 }
 
+exports.verify = async (req, res, next) => {
+    try {
+        const { _id, reqId, otp } = req.body;
+
+        // Find the ride by _id
+        const ride = await RideModel.findOne({ _id });
+
+        if (!ride) {
+            return res.status(404).json({ message: "Ride not found" });
+        }
+
+        // Find the requested booking within the ride's requestedBooking array
+        const requestedBooking = ride.requestedBooking.find(booking => booking._id.equals(reqId));
+
+        if (!requestedBooking) {
+            return res.status(404).json({ message: "Requested booking not found" });
+        }
+
+        // Check if the provided OTP matches the OTP stored in the requested booking
+        if (requestedBooking.otp === otp) {
+            requestedBooking.verified = true;
+            await ride.save();
+            return res.json({ status: true, message: "OTP verified successfully" });
+        } else {
+            return res.status(400).json({ status: false, message: "Incorrect OTP" });
+        }
+    } catch (error) {
+        // Handle error
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
 
 
+// confirmride before otp added
 exports.confirmride = async (req, res, next) => {
     try {
         const { _id, reqId, status } = req.body;
@@ -303,9 +336,13 @@ exports.confirmride = async (req, res, next) => {
         }
 
         
+        // generate otp
+        const otp = Math.floor(1000 + Math.random() * 9000);
 
         requestedBooking.status = "Approved";
-
+        
+        requestedBooking.otp = otp;
+        requestedBooking.verified = false;
 
 
 
